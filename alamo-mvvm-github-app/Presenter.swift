@@ -21,6 +21,9 @@ protocol PresenterInput {
     /// 検索が行われた時の処理。
     /// - parameter targetText: 検索対象の文字列。
     func didTapSearchButton(targetText: String)
+    
+    /// 検索のキャンセルが行われた時の処理。
+    func didTapSearchCancelButton()
 }
 
 protocol PresenterOutput: AnyObject {
@@ -28,7 +31,7 @@ protocol PresenterOutput: AnyObject {
     func reflectGitRepositoriesChanges()
     
     /// エラーメッセージを表示する。ユーザには [再試行] および [キャンセル] の選択肢を与える。
-    func showRetryOrCancelAlert(title: String, message: String, retryEvent: () -> ())
+    func showRetryOrCancelAlert(title: String, message: String, retryEvent: @escaping () -> ())
 }
 
 class Presenter {
@@ -45,19 +48,27 @@ class Presenter {
         Task {
             do {
                 gitRepositories = try await repository.getMyGitRepositories()
-                view.reflectGitRepositoriesChanges()
+                await MainActor.run {
+                    view.reflectGitRepositoriesChanges()
+                }
             } catch {
                 switch error {
                 case APIError.authorizationFailed:
-                    view.showRetryOrCancelAlert(title: "認証エラー", message: "認証に失敗しました。再試行しますか？", retryEvent: self.fetchGitRepositoriesAndUpdateView)
+                    await MainActor.run {
+                        view.showRetryOrCancelAlert(title: "認証エラー", message: "認証に失敗しました。\n再試行しますか？", retryEvent: self.fetchGitRepositoriesAndUpdateView)
+                    }
                     
                 case APIError.unknownError(let error):
                     print(error)
-                    view.showRetryOrCancelAlert(title: "通信エラー", message: "通信時にエラーが発生しました。再試行しますか？", retryEvent: self.fetchGitRepositoriesAndUpdateView)
+                    await MainActor.run {
+                        view.showRetryOrCancelAlert(title: "通信エラー", message: "通信時にエラーが発生しました。\n再試行しますか？", retryEvent: self.fetchGitRepositoriesAndUpdateView)
+                    }
                     
                 default:
                     print(error)
-                    view.showRetryOrCancelAlert(title: "エラー", message: "エラーが発生しました。再試行しますか？", retryEvent: self.fetchGitRepositoriesAndUpdateView)
+                    await MainActor.run {
+                        view.showRetryOrCancelAlert(title: "エラー", message: "エラーが発生しました。\n再試行しますか？", retryEvent: self.fetchGitRepositoriesAndUpdateView)
+                    }
                 }
             }
         }
@@ -75,5 +86,9 @@ extension Presenter: PresenterInput {
     
     func didTapSearchButton(targetText: String) {
         print("Searched \(targetText)")
+    }
+    
+    func didTapSearchCancelButton() {
+        didTapSearchButton(targetText: "")
     }
 }
