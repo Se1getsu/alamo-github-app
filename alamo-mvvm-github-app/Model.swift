@@ -8,3 +8,20 @@
 
 import Foundation
 
+struct GitRepository: Codable {
+    let id: Int
+    let name: String
+    let fullName: String
+    let htmlURL: String
+    let description: String?
+    let visibility: String
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case fullName = "full_name"
+        case htmlURL = "html_url"
+        case description
+        case visibility
+    }
+}
