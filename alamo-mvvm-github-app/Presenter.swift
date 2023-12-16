@@ -23,19 +23,57 @@ protocol PresenterInput {
     func didTapSearchButton(targetText: String)
 }
 
-protocol PresenterOutput {
+protocol PresenterOutput: AnyObject {
     /// `PresenterInput`の`gitRepositories`の変更を反映させる。
     func reflectGitRepositoriesChanges()
     
     /// エラーメッセージを表示する。ユーザには [再試行] および [キャンセル] の選択肢を与える。
-    func showRetryOrCancelAlert(title: String, message: String, retryEvent: () -> (), cancelEvent: () -> ())
+    func showRetryOrCancelAlert(title: String, message: String, retryEvent: () -> ())
 }
 
 class Presenter {
+    private weak var view: PresenterOutput!
     private let repository: Repository
-    private var gitReposiotries = [GitRepository]()
+    private(set) var gitRepositories = [GitRepository]()
     
-    init(repository: Repository) {
+    init(view: PresenterOutput, repository: Repository) {
+        self.view = view
         self.repository = repository
+    }
+    
+    func fetchGitRepositoriesAndUpdateView() {
+        Task {
+            do {
+                gitRepositories = try await repository.getMyGitRepositories()
+                view.reflectGitRepositoriesChanges()
+            } catch {
+                switch error {
+                case APIError.authorizationFailed:
+                    view.showRetryOrCancelAlert(title: "認証エラー", message: "認証に失敗しました。再試行しますか？", retryEvent: self.fetchGitRepositoriesAndUpdateView)
+                    
+                case APIError.unknownError(let error):
+                    print(error)
+                    view.showRetryOrCancelAlert(title: "通信エラー", message: "通信時にエラーが発生しました。再試行しますか？", retryEvent: self.fetchGitRepositoriesAndUpdateView)
+                    
+                default:
+                    print(error)
+                    view.showRetryOrCancelAlert(title: "エラー", message: "エラーが発生しました。再試行しますか？", retryEvent: self.fetchGitRepositoriesAndUpdateView)
+                }
+            }
+        }
+    }
+}
+
+extension Presenter: PresenterInput {
+    func viewDidLoad() {
+        fetchGitRepositoriesAndUpdateView()
+    }
+    
+    func didSelectGitRepository(at indexPath: IndexPath) {
+        print("Selected \(gitRepositories[indexPath.row].fullName)")
+    }
+    
+    func didTapSearchButton(targetText: String) {
+        print("Searched \(targetText)")
     }
 }
