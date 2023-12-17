@@ -55,13 +55,12 @@ class GitRepositoryCell: UITableViewCell {
         guard let url = URL(string: urlString) else { return }
         Task {
             do {
-                let (data, _) = try await URLSession.shared.data(from: url)
-                let image = UIImage(data: data) ?? UIImage()
+                let image = try await ImageDownloaderWithCache.shared.image(url: url) ?? UIImage()
                 await MainActor.run {
                     profileImageView.image = image
                 }
             } catch {
-                print("Failed to load image \(urlString): \(error)")
+                print(error)
             }
         }
     }

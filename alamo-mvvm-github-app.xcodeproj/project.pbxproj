@@ -19,6 +19,7 @@
 		A6C716172B2D2B3B0015B0B1 /* AccessTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6C716162B2D2B3B0015B0B1 /* AccessTokens.swift */; };
 		A6C716192B2D2C8B0015B0B1 /* AccessTokens.swift.example in Resources */ = {isa = PBXBuildFile; fileRef = A6C716182B2D2C8B0015B0B1 /* AccessTokens.swift.example */; };
 		A6C716232B2EB9A10015B0B1 /* GitRepositoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6C716222B2EB9A10015B0B1 /* GitRepositoryCell.swift */; };
+		A6C716252B2EC8560015B0B1 /* ImageDownloaderWithCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6C716242B2EC8560015B0B1 /* ImageDownloaderWithCache.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +36,7 @@
 		A6C716162B2D2B3B0015B0B1 /* AccessTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessTokens.swift; sourceTree = "<group>"; };
 		A6C716182B2D2C8B0015B0B1 /* AccessTokens.swift.example */ = {isa = PBXFileReference; lastKnownFileType = text; path = AccessTokens.swift.example; sourceTree = "<group>"; };
 		A6C716222B2EB9A10015B0B1 /* GitRepositoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitRepositoryCell.swift; sourceTree = "<group>"; };
+		A6C716242B2EC8560015B0B1 /* ImageDownloaderWithCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDownloaderWithCache.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +77,7 @@
 				A6C7160B2B2D11BF0015B0B1 /* Model.swift */,
 				A6C716112B2D11EF0015B0B1 /* Repository.swift */,
 				A6C716222B2EB9A10015B0B1 /* GitRepositoryCell.swift */,
+				A6C716242B2EC8560015B0B1 /* ImageDownloaderWithCache.swift */,
 				A6C716162B2D2B3B0015B0B1 /* AccessTokens.swift */,
 				A6C716182B2D2C8B0015B0B1 /* AccessTokens.swift.example */,
 				A6C716002B2A680E0015B0B1 /* Assets.xcassets */,
@@ -161,6 +164,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A6C716252B2EC8560015B0B1 /* ImageDownloaderWithCache.swift in Sources */,
 				A6C716102B2D11E50015B0B1 /* Presenter.swift in Sources */,
 				A6C716172B2D2B3B0015B0B1 /* AccessTokens.swift in Sources */,
 				A6C715FC2B2A680D0015B0B1 /* View.swift in Sources */,
