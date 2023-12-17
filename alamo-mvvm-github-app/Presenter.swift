@@ -6,7 +6,7 @@
 //  
 //
 
-import Foundation
+import UIKit
 
 protocol PresenterInput {
     /// 画面に表示するGitリポジトリのリスト。
@@ -44,7 +44,7 @@ class Presenter {
         self.repository = repository
     }
     
-    func fetchGitRepositoriesAndUpdateView() {
+    private func fetchGitRepositoriesAndUpdateView() {
         Task {
             do {
                 gitRepositories = try await repository.getMyGitRepositories()
@@ -73,6 +73,12 @@ class Presenter {
             }
         }
     }
+    
+    private func openInBrowser(gitRepository: GitRepository) {
+        let htmlURL = gitRepository.htmlURL
+        guard let url = URL(string: htmlURL) else { return }
+        UIApplication.shared.open(url)
+    }
 }
 
 extension Presenter: PresenterInput {
@@ -81,7 +87,7 @@ extension Presenter: PresenterInput {
     }
     
     func didSelectGitRepository(at indexPath: IndexPath) {
-        print("Selected \(gitRepositories[indexPath.row].fullName)")
+        openInBrowser(gitRepository: gitRepositories[indexPath.row])
     }
     
     func didTapSearchButton(targetText: String) {
