@@ -20,7 +20,7 @@ class ViewController: UIViewController {
     
     private let tableView: UITableView = {
         let tableView = UITableView()
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.register(GitRepositoryCell.self, forCellReuseIdentifier: "cell")
         return tableView
     }()
     
@@ -80,10 +80,8 @@ extension ViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        var content = cell.defaultContentConfiguration()
-        content.text = presenter.gitRepositories[indexPath.row].fullName
-        cell.contentConfiguration = content
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! GitRepositoryCell
+        cell.setGitRepository(presenter.gitRepositories[indexPath.row])
         return cell
     }
 }

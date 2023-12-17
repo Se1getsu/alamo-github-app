@@ -15,6 +15,7 @@ struct GitRepository: Codable {
     let htmlURL: String
     let description: String?
     let visibility: String
+    let owner: Owner
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -23,5 +24,16 @@ struct GitRepository: Codable {
         case htmlURL = "html_url"
         case description
         case visibility
+        case owner
+    }
+}
+
+struct Owner: Codable {
+    let id: Int
+    let avatarURL: String
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case avatarURL = "avatar_url"
     }
 }
