@@ -52,23 +52,22 @@ class Presenter {
                     view.reflectGitRepositoriesChanges()
                 }
             } catch {
+                let content: (title: String, message: String)
                 switch error {
                 case APIError.authorizationFailed:
-                    await MainActor.run {
-                        view.showRetryOrCancelAlert(title: "認証エラー", message: "認証に失敗しました。\n再試行しますか？", retryEvent: self.fetchGitRepositoriesAndUpdateView)
-                    }
+                    content = (title: "認証エラー", message: "認証に失敗しました。\n再試行しますか？")
                     
                 case APIError.unknownError(let error):
+                    content = (title: "通信エラー", message: "通信時にエラーが発生しました。\n再試行しますか？")
                     print(error)
-                    await MainActor.run {
-                        view.showRetryOrCancelAlert(title: "通信エラー", message: "通信時にエラーが発生しました。\n再試行しますか？", retryEvent: self.fetchGitRepositoriesAndUpdateView)
-                    }
                     
                 default:
+                    content = (title: "エラー", message: "エラーが発生しました。\n再試行しますか？")
                     print(error)
-                    await MainActor.run {
-                        view.showRetryOrCancelAlert(title: "エラー", message: "エラーが発生しました。\n再試行しますか？", retryEvent: self.fetchGitRepositoriesAndUpdateView)
-                    }
+                }
+                
+                await MainActor.run {
+                    view.showRetryOrCancelAlert(title: content.title, message: content.message, retryEvent: self.fetchGitRepositoriesAndUpdateView)
                 }
             }
         }
